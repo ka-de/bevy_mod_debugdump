@@ -40,7 +40,7 @@ impl Style {
                     color_label: "black".into(),
                     color_edge: "black".into(),
                     color_edge_slot: "blue".into(),
-                },
+                }
             ],
             color_node: "black".into(),
             node_style: "rounded".into(),
@@ -66,7 +66,7 @@ impl Style {
                     color_label: "white".into(),
                     color_edge: "white".into(),
                     color_edge_slot: "#a79be6".into(),
-                },
+                }
             ],
             color_node: "white".into(),
             node_style: "rounded".into(),
@@ -92,7 +92,7 @@ impl Style {
                     color_label: "white".into(),
                     color_edge: "white".into(),
                     color_edge_slot: "#a79be6".into(),
-                },
+                }
             ],
             color_node: "#99aab5".into(),
             node_style: "rounded".into(),
@@ -102,6 +102,6 @@ impl Style {
 
 impl Default for Style {
     fn default() -> Self {
-        Style::dark_github()
+        Style::light()
     }
 }

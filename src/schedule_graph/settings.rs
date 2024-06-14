@@ -1,9 +1,9 @@
 use std::any::TypeId;
 
-use bevy_ecs::{component::ComponentId, system::System, world::World};
+use bevy_ecs::{ component::ComponentId, system::System, world::World };
 use bevy_render::color::Color;
 
-use super::system_style::{color_to_hex, system_to_style, SystemStyle};
+use super::system_style::{ color_to_hex, system_to_style, SystemStyle };
 
 #[derive(Default, Clone, Copy)]
 pub enum RankDir {
@@ -84,7 +84,7 @@ impl Style {
                 "#663699".into(),
                 "#3363bb".into(),
                 "#22c2bb".into(),
-                "#99d955".into(),
+                "#99d955".into()
             ],
             multiple_set_edge_color: "blue".into(),
             ambiguity_color: "#c93526".into(),
@@ -113,7 +113,7 @@ impl Style {
                 "#663699".into(),
                 "#3363bb".into(),
                 "#22c2bb".into(),
-                "#99d955".into(),
+                "#99d955".into()
             ],
             ambiguity_color: "#c93526".into(),
             ambiguity_bgcolor: "#c5daeb".into(),
@@ -142,7 +142,7 @@ impl Style {
                 "#663699".into(),
                 "#3363bb".into(),
                 "#22c2bb".into(),
-                "#99d955".into(),
+                "#99d955".into()
             ],
             ambiguity_color: "#c93526".into(),
             ambiguity_bgcolor: "#c6e6ff".into(),
@@ -153,7 +153,7 @@ impl Style {
 }
 impl Default for Style {
     fn default() -> Self {
-        Style::dark_github()
+        Style::light()
     }
 }
 
@@ -161,7 +161,7 @@ type IncludeAmbiguityFn = dyn Fn(
     &dyn System<In = (), Out = ()>,
     &dyn System<In = (), Out = ()>,
     &[ComponentId],
-    &World,
+    &World
 ) -> bool;
 
 pub struct NodeStyle {
@@ -191,29 +191,38 @@ pub struct Settings {
 
 impl Settings {
     /// Set the `include_system` predicate to match only systems for which their names matches `filter`
-    pub fn filter_name(mut self, filter: impl Fn(&str) -> bool + 'static) -> Self {
-        self.include_system = Some(Box::new(move |system| {
-            let name = system.name();
-            filter(&name)
-        }));
+    pub fn filter_name(mut self, filter: impl (Fn(&str) -> bool) + 'static) -> Self {
+        self.include_system = Some(
+            Box::new(move |system| {
+                let name = system.name();
+                filter(&name)
+            })
+        );
         self
     }
     /// Set the `include_system` predicate to only match systems from the specified crate
     pub fn filter_in_crate(mut self, crate_: &str) -> Self {
         let crate_ = crate_.to_owned();
-        self.include_system = Some(Box::new(move |system| {
-            let name = system.name();
-            name.starts_with(&crate_)
-        }));
+        self.include_system = Some(
+            Box::new(move |system| {
+                let name = system.name();
+                name.starts_with(&crate_)
+            })
+        );
         self
     }
     /// Set the `include_system` predicate to only match systems from the specified crates
     pub fn filter_in_crates(mut self, crates: &[&str]) -> Self {
-        let crates: Vec<_> = crates.iter().map(|&s| s.to_owned()).collect();
-        self.include_system = Some(Box::new(move |system| {
-            let name = system.name();
-            crates.iter().any(|crate_| name.starts_with(crate_))
-        }));
+        let crates: Vec<_> = crates
+            .iter()
+            .map(|&s| s.to_owned())
+            .collect();
+        self.include_system = Some(
+            Box::new(move |system| {
+                let name = system.name();
+                crates.iter().any(|crate_| name.starts_with(crate_))
+            })
+        );
         self
     }
 
@@ -227,11 +236,7 @@ impl Settings {
 
         // Calculate text color based on bg
         let text_color = style.text_color.unwrap_or_else(|| {
-            if is_dark {
-                Color::hsl(h, s, 0.9)
-            } else {
-                Color::hsl(h, s, 0.1)
-            }
+            if is_dark { Color::hsl(h, s, 0.9) } else { Color::hsl(h, s, 0.1) }
         });
 
         // Calculate border color based on bg
@@ -252,34 +257,40 @@ impl Settings {
 
     /// Specifies `include_ambiguity` to ignore ambiguities that are only ambiguous with regard to `T`
     pub fn without_single_ambiguities_on<T: 'static>(mut self) -> Self {
-        self.include_ambiguity = Some(Box::new(move |_, _, conflicts, world| {
-            let &[conflict] = conflicts else { return true };
-            let Some(type_id) = world
-                .components()
-                .get_info(conflict)
-                .and_then(|info| info.type_id())
-            else {
-                return true;
-            };
-            type_id != TypeId::of::<T>()
-        }));
+        self.include_ambiguity = Some(
+            Box::new(move |_, _, conflicts, world| {
+                let &[conflict] = conflicts else {
+                    return true;
+                };
+                let Some(type_id) = world
+                    .components()
+                    .get_info(conflict)
+                    .and_then(|info| info.type_id()) else {
+                    return true;
+                };
+                type_id != TypeId::of::<T>()
+            })
+        );
         self
     }
 
     /// Specifies `include_ambiguity` to ignore ambiguities that are exactly one of the given `type_ids`
     pub fn without_single_ambiguities_on_one_of(mut self, type_ids: &[TypeId]) -> Self {
         let type_ids = type_ids.to_vec();
-        self.include_ambiguity = Some(Box::new(move |_, _, conflicts, world| {
-            let &[conflict] = conflicts else { return true };
-            let Some(type_id) = world
-                .components()
-                .get_info(conflict)
-                .and_then(|info| info.type_id())
-            else {
-                return true;
-            };
-            !type_ids.contains(&type_id)
-        }));
+        self.include_ambiguity = Some(
+            Box::new(move |_, _, conflicts, world| {
+                let &[conflict] = conflicts else {
+                    return true;
+                };
+                let Some(type_id) = world
+                    .components()
+                    .get_info(conflict)
+                    .and_then(|info| info.type_id()) else {
+                    return true;
+                };
+                !type_ids.contains(&type_id)
+            })
+        );
         self
     }
 }
