@@ -1,9 +1,9 @@
 [package]
 name = "bevy_mod_debugdump"
 version = "0.10.0"
-repository = "https://github.com/jakobhellermann/bevy_mod_debugdump"
+repository = "https://github.com/ka-de/bevy_mod_debugdump"
 readme = "README.md"
-license = "MIT OR Apache-2.0"
+license = "MIT"
 description = "Visualization tools for bevy"
 keywords = ["bevy", "schedule", "visual", "render", "graph"]
 authors = ["Jakob Hellermann <jakob.hellermann@protonmail.com>"]
@@ -29,10 +29,3 @@ bevy = { version = "0.13" }
 [[example]]
 name = "print_render_graph"
 required-features = ["render_graph"]
-
-# [patch.crates-io]
-# bevy_ecs = { path = "/home/jakob/dev/rust/bevy/crates/bevy_ecs" }
-# bevy_app = { path = "/home/jakob/dev/rust/bevy/crates/bevy_app" }
-# bevy_utils = { path = "/home/jakob/dev/rust/bevy/crates/bevy_utils" }
-# bevy_render = { path = "/home/jakob/dev/rust/bevy/crates/bevy_render" }
-# bevy = { path = "/home/jakob/dev/rust/bevy" }
